@@ -13,20 +13,16 @@ export async function getOrCreateResults(simulationID: string) {
 }
 
 export function updateResilienceScore(result: any) {
-    let resilienceScore = 0;
-    let testSum = 0;
-    let testSuccesses = 0;
-    if (result.searchResultsTotal !== undefined && result.searchResultsTotal !== null && result.searchResultsScenarioSuccessesTotal != undefined) {
-        testSum += result.searchResultsTotal
-        testSuccesses += result.searchResultsScenarioSuccessesTotal
+
+    let searchScore = 0;
+    let simulationScore = 0;
+    if (result.searchResultsTotal !== undefined && result.searchResultsTotal !== null && result.searchResultsTotal > 0 && result.searchResultsScenarioSuccessesTotal != undefined) {
+        searchScore = result.searchResultsScenarioSuccessesTotal / result.searchResultsTotal
     }
-    if (result.simulationResultsTotal !== undefined && result.simulationResultsTotal !== null && result.simulationResultsScenarioSuccessesTotal != undefined) {
-        testSum += result.simulationResultsTotal
-        testSuccesses += result.simulationResultsScenarioSuccessesTotal
+    if (result.simulationResultsTotal !== undefined && result.simulationResultsTotal !== null && result.simulationResultsTotal > 0 && result.simulationResultsScenarioSuccessesTotal != undefined) {
+        simulationScore = result.simulationResultsScenarioSuccessesTotal / result.simulationResultsTotal
     }
-    if (testSum > 0) {
-        resilienceScore = Math.floor(100 * testSuccesses / testSum)
-    }
-    result.resilienceScore = resilienceScore
+
+    result.resilienceScore = Math.floor(50 * (searchScore + simulationScore))
 }
 
